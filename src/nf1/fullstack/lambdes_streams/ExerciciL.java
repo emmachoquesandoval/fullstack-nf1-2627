@@ -25,110 +25,189 @@ public class ExerciciL {
         llistaPersones = new ArrayList<>(Arrays.asList(lpers));
         Map<Integer,Integer> mapPersones = new HashMap<>();
 
-        // 1 - Canviar per una lambda
+        // 1 - Cambiar por una lambda
+
         System.out.println("\n1-2");
-        Collections.sort(llistaPersones, new Comparator<Persona>() {
+
+        /*Collections.sort(llistaPersones, new Comparator<Persona>() {
             @Override
             public int compare(Persona o1, Persona o2) {
                 if(o1.getNom().charAt(0) >= o2.getNom().charAt(0)) return 1;
                 else return -1;
             }
+        });*/
+        Collections.sort(llistaPersones, (o1,o2) -> o1.getNom().charAt(0) >= o2.getNom().charAt(0) ? 1 : -1);
+        llistaPersones.forEach(System.out::println);
+
+
+        // 2 - Cambiar por una lambda
+        /*for(Persona p: llistaPersones) {
+            System.out.println(p);
+        }*/
+        llistaPersones.forEach(System.out::println);
+
+
+        // 3 - Cambia por una clase anónima
+        System.out.println("\n3-4");
+        //ordenación alfabética inversa del nombre
+        /*    llistaPersones.sort((o1,o2) -> o2.getNom().compareTo(o1.getNom()));*/
+        llistaPersones.sort(new Comparator<Persona>() {
+            @Override
+            public int compare(Persona o1, Persona o2) {
+                return o2.getNom().compareTo(o1.getNom());
+            }
         });
 
 
-
-        // 2 - Canviar per una Lambda
-        for(Persona p: llistaPersones) {
+        // 4 - Cambia por una llamada al método mediante una referencia
+        /*for(Persona p: llistaPersones) {
             System.out.println(p);
-        }
+        };*/
+        System.out.println("\n4");
+        llistaPersones.forEach(System.out::println);
 
 
-        // 3 - Canvia per una classe anònima
-        System.out.println("\n3-4");
-        //ordenació alfabètica inversa del nom
-            llistaPersones.sort((o1,o2) -> o2.getNom().compareTo(o1.getNom()));
-
-
-        // 4 - Canvia per una crida al mètode per referència
-        for(Persona p: llistaPersones) {
-            System.out.println(p);
-        };
-
-
-        // 5 - Canvia l'ompliment d'aquest map per un forEach amb lambda
-        for(Persona per : llistaPersones) {
+        // 5 - Cambia el llenado de este map por un forEach con lambda
+        /*for(Persona per : llistaPersones) {
             mapPersones.put(per.getAge(),1);
-        }
-
-
-        // 6 - Canvia aquest bucle for per un recorregut forEach i amb lambda
+        }*/
         System.out.println("\n5");
-        for(Map.Entry entry : mapPersones.entrySet()) {
+        llistaPersones.forEach(per -> mapPersones.put(per.getAge(),1));
+
+
+        // 6 - Cambia este bucle for por un recorrido forEach con lambda
+        System.out.println("\n5");
+        /*for(Map.Entry entry : mapPersones.entrySet()) {
             System.out.println(entry.getKey() + " : " + entry.getValue());
-        }
+        }*/
+        mapPersones.forEach((k,v) -> System.out.println(k + " : " + v));
 
-        // 7 - treu un llistat de persones DONA amb lambda i stream
+        // 7 - Obtén un listado de personas de género DONA con lambda y stream
         System.out.println("\n7 DONES");
+        llistaPersones.stream()
+                .filter(persona -> persona.getGenere().equals("DONA"))
+                .forEach(System.out::println);
 
-        // 8 - treu un llistat dels dos HOMES més joves (stream)
+        // 8 - Obtén un listado de los dos hombres más jóvenes (stream)
         System.out.println("\n8 HOMES + JOVES");
 
-        // 9- Esborrar de la llistaPersones les persones entre 30 i 40 anys (lambda)
+        llistaPersones.stream()
+                .filter(persona -> persona.getGenere().equals("HOME"))
+                .sorted(Comparator.comparingInt(Persona::getAge))
+                .limit(2)
+                .forEach(System.out::println);
+
+        // 9- Eliminar de llistaPersones las personas de entre 30 y 40 años (lambda)
         System.out.println("\n9");
 
-        // 10 - treu un llistat de les persones que tinguin una 'a' al seu nom
+        llistaPersones.removeIf(persona -> persona.getAge() >= 30 && persona.getAge() <= 40);
+        llistaPersones.forEach(System.out::println);
+
+        // 10 - Obtén un listado de las personas que tengan una 'a' en su nombre
         System.out.println("\n10 Amb una 'A'");
 
-        //11 - treu un llistat amb dos dies després de les dates de naixament de les persones
+        llistaPersones.stream()
+                .filter(persona -> persona.getNom().toLowerCase().contains("a"))
+                .forEach(System.out::println);
+
+        //11 - Obtén un listado con las fechas de nacimiento de las personas más dos días
         System.out.println("\n11 - dates amb dos dies més");
 
+        llistaPersones.stream()
+                .map(persona -> persona.getDataNaixament().plusDays(2))
+                .forEach(System.out::println);
 
-        //12 - Rejovenir(modificar) dos anys a totes les persones
+        //12 - Rejuvenecer (modificar) dos años a todas las personas
         System.out.println("\n12 - Rejovenir dos anys a totes les persones");
-       ;
 
-        //13. A partir de la següent llista de noms d'alumnes crea una nova llista d'alumnes amb aquest alumnes nous
-        // pots modificar la classe alumne si cal.
+        llistaPersones.stream()
+                .map(persona -> persona.getDataNaixament().plusYears(2))
+                .forEach(System.out::println);
+
+        //13. A partir de la siguiente lista de nombres de alumnos, crea una nueva lista de alumnos con estos alumnos nuevos
+        // Puedes modificar la clase Alumne si es necesario.
+        System.out.println("\n13 - Crear una nova llista d'alumnes");
         List<String> alumnesNous = Arrays.asList("Pedro","Pablo","Bilma");
+        alumnesNous.stream()
+                .map(alumne -> new Alumne(alumne));
+        /*.forEach(alumne -> System.out.println(alumne.getNom()+" "+alumne.getDataNaixament()));*/
+        /*.forEach(System.out::println)*/
+        alumnesNous.stream().forEach(System.out::println);
 
-        //14. Amb un stream, mostra les persones nascudes abans de l'any 1980.
-        // Utilitza una referència a mètode per mostrar cada persona.
+        //14. Con un stream, muestra las personas nacidas antes del año 1980.
+        // Utiliza una referencia a método para mostrar cada persona.
         System.out.println("\n14 - Persones nascudes abans de 1980");
+        llistaPersones.stream()
+                .filter(persona -> persona.getDataNaixament().getYear() < 1980)
+                .forEach(System.out::println);
 
-        //15. Crea i mostra una llista de noms de les persones, ordenada alfabèticament.
-        // Fes servir map i referències a mètodes.
+        //15. Crea y muestra una lista de nombres de las personas, ordenada alfabéticamente.
+        // Usa map y referencias a métodos.
         System.out.println("\n15 - Noms ordenats");
+        llistaPersones.stream()
+                .map(Persona::getNom)
+                .sorted()
+                .forEach(System.out::println);
 
-        //16. Amb un stream, mostra les edats de les persones que tenen un nom de més de cinc lletres.
-        // Utilitza una referència a mètode per mostrar cada edat.
+        //16. Con un stream, muestra las edades de las personas cuyo nombre tiene más de cinco letras.
+        // Utiliza una referencia a método para mostrar cada edad.
         System.out.println("\n16 - Edats de persones amb noms llargs");
+        llistaPersones.stream()
+                .filter(persona -> persona.getNom().length() > 5)
+                .map(Persona::getDataNaixament)
+                .forEach(System.out::println);
 
-        //17. Mostra els noms de les dones en majúscules.
-        // Resol-ho amb filter, map i una referència a mètode.
+        //17. Muestra los nombres de las mujeres en mayúsculas.
+        // Resuélvelo con filter, map y una referencia a método.
         System.out.println("\n17 - Noms de les dones en majúscules");
+        llistaPersones.stream()
+                .filter(persona -> persona.getGenere().equals("Dona"))
+                .map(Persona::getNom)
+                .map(String::toUpperCase)
+                .forEach(System.out::println);
 
-        //18. Compta quantes persones van néixer al novembre utilitzant un stream.
+        //18. Cuenta cuántas personas nacieron en noviembre utilizando un stream.
         System.out.println("\n18 - Persones nascudes al novembre");
+        llistaPersones.stream()
+                .filter(persona -> persona.getDataNaixament().getMonthValue() == 11)
+                .count();
 
-        //19. Troba i mostra la persona més jove amb min i Comparator.comparingInt.
-        // Fes servir una referència a mètode sempre que sigui possible.
+        //19. Busca y muestra la persona más joven con min y Comparator.comparingInt.
+        // Usa una referencia a método siempre que sea posible.
         System.out.println("\n19 - Persona més jove");
+        llistaPersones.stream()
+                .min(Comparator.comparing(Persona::getDataNaixament))
+                .ifPresent(System.out::println);
 
-        //20. Converteix alumnesNous en una llista d'objectes Alumne amb un stream
-        // i Alumne::new, ordena'ls pel nom i mostra'ls amb una referència a mètode.
+        //20. Convierte alumnesNous en una lista de objetos Alumne con un stream
+        // y Alumne::new, ordénalos por nombre y muéstralos con una referencia a método.
         System.out.println("\n20 - Alumnes ordenats pel nom");
+        llistaPersones.stream()
+                .sorted(Comparator.comparing(Persona::getNom))
+                .forEach(System.out::println);
 
-        //21. A partir d'aquesta llista de marques, crea una llista de Cotxe
-        // fent servir un stream i la referència al constructor Cotxe::new.
-        // Mostra els cotxes amb una referència a mètode.
+        //21. A partir de esta lista de marcas, crea una lista de Cotxe
+        // usando un stream y la referencia al constructor Cotxe::new.
+        // Muestra los coches con una referencia a método.
         List<String> marquesCotxes = Arrays.asList("Seat", "Toyota", "Ford", "Tesla");
         System.out.println("\n21 - Crear cotxes a partir de marques");
+        List<Cotxe> cotxes = marquesCotxes.stream()
+                .map(Cotxe::new)
+                .toList();
+        cotxes.forEach(System.out::println);
 
-        //22. Assigna a les primeres persones de llistaPersones els Cotxe creats
-        // a l'exercici anterior. Fes l'assignació amb un stream i una lambda,
-        // i mostra després les marques dels cotxes assignats.
+        //22. Asigna a las primeras personas de llistaPersones los Cotxe creados
+        // en el ejercicio anterior. Haz la asignación con un stream y una lambda,
+        // y muestra después las marcas de los coches asignados.
         System.out.println("\n22 - Assignar cotxes a les persones");
-
+        llistaPersones.stream()
+                .limit(cotxes.size())
+                .forEach(persona -> persona.setCotxe(cotxes.get(llistaPersones.indexOf(persona))));
+        llistaPersones.stream()
+                .filter(persona -> persona.getCotxe() != null)
+                .map(Persona::getCotxe)
+                .map(Cotxe::getMarca)
+                .forEach(System.out::println);
     }
 
 
